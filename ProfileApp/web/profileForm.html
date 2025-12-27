@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProfileHub | Create Student Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .glass-form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s linear infinite;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-body {
+            padding: 50px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: #4facfe;
+            font-size: 1.2rem;
+        }
+
+        .required::after {
+            content: '*';
+            color: #ff416c;
+            margin-left: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            color: #333;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 5px 20px rgba(79, 172, 254, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-input.error {
+            border-color: #ff416c;
+            background: linear-gradient(135deg, rgba(255, 65, 108, 0.05), rgba(255, 75, 43, 0.05));
+        }
+
+        .form-input.success {
+            border-color: #56ab2f;
+            background: linear-gradient(135deg, rgba(86, 171, 47, 0.05), rgba(168, 224, 99, 0.05));
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+            line-height: 1.6;
+            font-family: inherit;
+        }
+
+        .form-helper {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .form-helper i {
+            color: #4facfe;
+        }
+
+        .character-count {
+            font-size: 0.85rem;
+            color: #666;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .character-count.warning {
+            color: #ff9800;
+        }
+
+        .character-count.error {
+            color: #ff416c;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            flex: 1;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-reset {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn-reset:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #666;
+            border: 2px solid #ddd;
+        }
+
+        .btn-cancel:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            transform: translateY(-3px);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .form-footer {
+            text-align: center;
+            padding: 30px 50px;
+            border-top: 1px solid #e9ecef;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .form-footer a {
+            color: #4facfe;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, rgba(255, 65, 108, 0.1), rgba(255, 75, 43, 0.1));
+            color: #ff416c;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 5px solid #ff416c;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideIn 0.5s ease-out;
+            display: none;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        .error-message i {
+            font-size: 1.5rem;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(50px, 50px) rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .glass-form-container {
+                margin: 20px;
+            }
+            
+            .form-body {
+                padding: 30px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                padding: 16px 30px;
+                min-width: 100%;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .form-header {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Input focus animation */
+        .form-group:focus-within .form-label {
+            color: #4facfe;
+            transform: translateX(5px);
+            transition: all 0.3s ease;
+        }
+
+        /* Loading state */
+        .btn-submit.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn-submit.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 3px solid white;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="glass-form-container">
+        <!-- Form Header -->
+        <div class="form-header">
+            <div class="header-content">
+                <div class="form-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h1>Create Student Profile</h1>
+                <p class="subtitle">Fill in the details below to create a new student profile. All fields marked with * are required.</p>
+            </div>
+        </div>
+
+        <!-- Error Message (for form validation) -->
+        <div class="error-message" id="formError">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <strong>Please fix the following errors:</strong>
+                <ul id="errorList" style="margin-top: 5px; margin-left: 20px;"></ul>
+            </div>
+        </div>
+
+        <!-- Form Body -->
+        <div class="form-body">
+            <form id="profileForm" action="ProfileServlet" method="post">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <i class="fas fa-user"></i> Full Name
+                        </label>
+                        <input type="text" 
+                               name="name" 
+                               class="form-input" 
+                               placeholder="Enter full name" 
+                               required
+                               data-validate="name">
+                        <div class="form-helper">
+                            <i class="fas fa-info-circle"></i>
+                            Enter the student's full legal name
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <i class="fas fa-id-card"></i> Student ID
+                        </label>
+                        <input type="text" 
+                               name="studentId" 
+                               class="form-input" 
+                               placeholder="e.g., S1234567" 
+                               required
+                               data-validate="studentId">
+                        <div class="form-helper">
+                            <i class="fas fa-info-circle"></i>
+                            Unique student identification number
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <i class="fas fa-graduation-cap"></i> Program
+                        </label>
+                        <input type="text" 
+                               name="program" 
+                               class="form-input" 
+                               placeholder="e.g., Computer Science" 
+                               required
+                               data-validate="program">
+                        <div class="form-helper">
+                            <i class="fas fa-info-circle"></i>
+                            Enter the academic program or major
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <i class="fas fa-envelope"></i> Email Address
+                        </label>
+                        <input type="email" 
+                               name="email" 
+                               class="form-input" 
+                               placeholder="student@university.edu" 
+                               required
+                               data-validate="email">
+                        <div class="form-helper">
+                            <i class="fas fa-info-circle"></i>
+                            Official university email address
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">
+                        <i class="fas fa-heart"></i> Hobbies & Interests
+                    </label>
+                    <input type="text" 
+                           name="hobbies" 
+                           class="form-input" 
+                           placeholder="e.g., Reading, Swimming, Coding, Photography" 
+                           required
+                           data-validate="hobbies">
+                    <div class="form-helper">
+                        <i class="fas fa-info-circle"></i>
+                        Separate multiple hobbies with commas
+                    </div>
+                    <div class="character-count">
+                        <span id="hobbiesCount">0</span>/100 characters
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">
+                        <i class="fas fa-comment"></i> Self Introduction
+                    </label>
+                    <textarea name="introduction" 
+                              class="form-input form-textarea" 
+                              placeholder="Write a brief introduction about yourself, your background, and your goals..."
+                              rows="4"
+                              required
+                              data-validate="introduction"></textarea>
+                    <div class="form-helper">
+                        <i class="fas fa-info-circle"></i>
+                        Share your background, achievements, and future aspirations
+                    </div>
+                    <div class="character-count">
+                        <span id="introCount">0</span>/500 characters
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-bar">
+                    <div class="progress-fill" id="formProgress"></div>
+                </div>
+                <div class="progress-text">
+                    Form Completion: <span id="progressText">0%</span>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-submit" id="submitBtn">
+                        <i class="fas fa-save"></i> Create Profile
+                    </button>
+                    <button type="reset" class="btn btn-reset">
+                        <i class="fas fa-redo"></i> Clear Form
+                    </button>
+                    <a href="ViewProfilesServlet" class="btn btn-cancel">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Form Footer -->
+        <div class="form-footer">
+            <p>
+                <i class="fas fa-shield-alt"></i> Your data is securely stored and protected.
+                <br>
+                Need help? <a href="mailto:support@profilehub.edu">Contact support</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('profileForm');
+            const formError = document.getElementById('formError');
+            const errorList = document.getElementById('errorList');
+            const submitBtn = document.getElementById('submitBtn');
+            const progressFill = document.getElementById('formProgress');
+            const progressText = document.getElementById('progressText');
+            const hobbiesCount = document.getElementById('hobbiesCount');
+            const introCount = document.getElementById('introCount');
+            
+            // Character counters
+            const hobbiesInput = document.querySelector('input[name="hobbies"]');
+            const introInput = document.querySelector('textarea[name="introduction"]');
+            
+            hobbiesInput.addEventListener('input', function() {
+                const count = this.value.length;
+                hobbiesCount.textContent = count;
+                if (count > 80) {
+                    hobbiesCount.parentElement.className = 'character-count warning';
+                } else {
+                    hobbiesCount.parentElement.className = 'character-count';
+                }
+                updateProgress();
+            });
+            
+            introInput.addEventListener('input', function() {
+                const count = this.value.length;
+                introCount.textContent = count;
+                if (count > 400) {
+                    introCount.parentElement.className = 'character-count warning';
+                } else if (count > 500) {
+                    introCount.parentElement.className = 'character-count error';
+                } else {
+                    introCount.parentElement.className = 'character-count';
+                }
+                updateProgress();
+            });
+            
+            // Update progress bar
+            function updateProgress() {
+                const inputs = form.querySelectorAll('input[required], textarea[required]');
+                let filled = 0;
+                
+                inputs.forEach(input => {
+                    if (input.value.trim() !== '') {
+                        filled++;
+                    }
+                });
+                
+                const progress = Math.round((filled / inputs.length) * 100);
+                progressFill.style.width = progress + '%';
+                progressText.textContent = progress + '%';
+                
+                // Add color change based on progress
+                if (progress < 50) {
+                    progressFill.style.background = 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)';
+                } else if (progress < 100) {
+                    progressFill.style.background = 'linear-gradient(135deg, #ff9800 0%, #ffc107 100%)';
+                } else {
+                    progressFill.style.initialValue = 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)';
+                }
+            }
+            
+            // Update progress on input
+            form.querySelectorAll('input, textarea').forEach(input => {
+                input.addEventListener('input', updateProgress);
+                input.addEventListener('change', updateProgress);
+            });
+            
+            // Initial progress update
+            updateProgress();
+            
+            // Form validation
+            function validateForm() {
+                const errors = [];
+                const nameInput = document.querySelector('input[name="name"]');
+                const studentIdInput = document.querySelector('input[name="studentId"]');
+                const programInput = document.querySelector('input[name="program"]');
+                const emailInput = document.querySelector('input[name="email"]');
+                const hobbiesInput = document.querySelector('input[name="hobbies"]');
+                const introInput = document.querySelector('textarea[name="introduction"]');
+                
+                // Reset all error states
+                form.querySelectorAll('.form-input').forEach(input => {
+                    input.classList.remove('error', 'success');
+                });
+                
+                // Name validation
+                if (!nameInput.value.trim()) {
+                    errors.push('Full Name is required');
+                    nameInput.classList.add('error');
+                } else if (nameInput.value.trim().length < 2) {
+                    errors.push('Full Name must be at least 2 characters');
+                    nameInput.classList.add('error');
+                } else {
+                    nameInput.classList.add('success');
+                }
+                
+                // Student ID validation
+                if (!studentIdInput.value.trim()) {
+                    errors.push('Student ID is required');
+                    studentIdInput.classList.add('error');
+                } else if (!/^[A-Za-z0-9]{5,15}$/.test(studentIdInput.value.trim())) {
+                    errors.push('Student ID must be 5-15 alphanumeric characters');
+                    studentIdInput.classList.add('error');
+                } else {
+                    studentIdInput.classList.add('success');
+                }
+                
+                // Program validation
+                if (!programInput.value.trim()) {
+                    errors.push('Program is required');
+                    programInput.classList.add('error');
+                } else if (programInput.value.trim().length < 3) {
+                    errors.push('Program name must be at least 3 characters');
+                    programInput.classList.add('error');
+                } else {
+                    programInput.classList.add('success');
+                }
+                
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailInput.value.trim()) {
+                    errors.push('Email is required');
+                    emailInput.classList.add('error');
+                } else if (!emailRegex.test(emailInput.value.trim())) {
+                    errors.push('Please enter a valid email address');
+                    emailInput.classList.add('error');
+                } else {
+                    emailInput.classList.add('success');
+                }
+                
+                // Hobbies validation
+                if (!hobbiesInput.value.trim()) {
+                    errors.push('Hobbies are required');
+                    hobbiesInput.classList.add('error');
+                } else if (hobbiesInput.value.trim().length < 3) {
+                    errors.push('Please enter at least one hobby (3+ characters)');
+                    hobbiesInput.classList.add('error');
+                } else {
+                    hobbiesInput.classList.add('success');
+                }
+                
+                // Introduction validation
+                if (!introInput.value.trim()) {
+                    errors.push('Introduction is required');
+                    introInput.classList.add('error');
+                } else if (introInput.value.trim().length < 20) {
+                    errors.push('Introduction must be at least 20 characters');
+                    introInput.classList.add('error');
+                } else if (introInput.value.trim().length > 500) {
+                    errors.push('Introduction must not exceed 500 characters');
+                    introInput.classList.add('error');
+                } else {
+                    introInput.classList.add('success');
+                }
+                
+                // Display errors if any
+                if (errors.length > 0) {
+                    errorList.innerHTML = '';
+                    errors.forEach(error => {
+                        const li = document.createElement('li');
+                        li.textContent = error;
+                        errorList.appendChild(li);
+                    });
+                    formError.classList.add('show');
+                    
+                    // Scroll to error message
+                    formError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    return false;
+                } else {
+                    formError.classList.remove('show');
+                    return true;
+                }
+            }
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // Show loading state
+                    submitBtn.classList.add('loading');
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner"></i> Creating Profile...';
+                    
+                    // Simulate processing delay
+                    setTimeout(() => {
+                        // Actually submit the form
+                        form.submit();
+                    }, 1500);
+                }
+            });
+            
+            // Real-time validation on blur
+            form.querySelectorAll('input, textarea').forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value.trim() !== '') {
+                        validateForm();
+                    }
+                });
+            });
+            
+            // Reset form button
+            form.querySelector('button[type="reset"]').addEventListener('click', function() {
+                form.querySelectorAll('.form-input').forEach(input => {
+                    input.classList.remove('error', 'success');
+                });
+                formError.classList.remove('show');
+                updateProgress();
+                
+                // Reset character counters
+                hobbiesCount.textContent = '0';
+                introCount.textContent = '0';
+                hobbiesCount.parentElement.className = 'character-count';
+                introCount.parentElement.className = 'character-count';
+            });
+            
+            // Add input focus effects
+            form.querySelectorAll('.form-input').forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('focused');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
